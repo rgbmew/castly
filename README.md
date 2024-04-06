@@ -41,4 +41,11 @@ Q: It works on GTK4 apps, but not adw-gtk3; what shall i do?!?!??!?!
 A: symlink ~/.config/gtk-4.0/gtk.css to ~/.config/gtk-3.0/gtk.css, and everything will work automatically :)
 
 <br><br><br>
+# screenshots
+![](./screenshot1.png)
+![](./screenshot2.png)
+![](./screenshot3.png)
+![](./screenshot4.png)
+
+<br><br><br>
 THE SOFTWARE IS PROVIDED “AS IS” or some shit idk im not a lawyer
