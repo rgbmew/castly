@@ -7,7 +7,8 @@ I made this because I love custom accent colors, and tinting apps with my chosen
 
 **THIS PROGRAM WILL DELETE YOUR GTK.CSS. MAKE A BACKUP**
 <br><br><br>
-usage: castly \<hex> \<mode> \<baseamount (optional)> \<titlebar amount (optional)> \<sidebar amount (optional)>
+# usage
+castly \<hex> \<mode> \<baseamount (optional)> \<titlebar amount (optional)> \<sidebar amount (optional)>
 
 example: castly 95AEA3 bothlight 0.2 0.6 0.4
 
@@ -28,8 +29,8 @@ modes: light, dark, titlelight, titledark, sidebarlight, sidebardark, bothlight,
 <br>
 if you set the first amount var, but don't set the other 2, then the titlebar amount defaults to amount*2, and the sidebar amount defaults to amount*1.75
 
-<br><br>
-LIMITATIONS:
+<br><br><br>
+# limitations
 - Shell theming is not gonna happen
 - You have to reload all of your apps for the new accent color to take effect: I'm modifying gtk.css, and GTK doesn't allow for dynamic reloading
 - Apps forced into dark mode can look weird on light mode themes
