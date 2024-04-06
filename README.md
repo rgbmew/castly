@@ -26,7 +26,7 @@ modes: light, dark, titlelight, titledark, sidebarlight, sidebardark, bothlight,
 - sidebar<light/dark>: tint the selection accent color & the sidebar
 - both<light/dark>: tint the titlebar, sidebar, & the selection accent color
 - no: only change the selection accent color
-<br><br>
+
 if you set the first amount var, but don't set the other 2, then the titlebar amount defaults to amount\*2, and the sidebar amount defaults to amount\*1.75
 <br><br><br>
 # limitations
