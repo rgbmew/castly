@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+#load the hex into something i can work with
+MYHEX=$1
+
+#check for errors
+if ! [[ ${#MYHEX} == 6 && $2 =~ ^("light"|"dark"|"titlelight"|"titledark"|"sidebarlight"|"sidebardark"|"bothlight"|"bothdark"|"no")$ ]]; then
+	printf "usage: color <hex> <mode> <amount>\n\nhex color should NOT contain #\namount is optional (default 0.1)\n\nmodes: light, dark, titlelight, titledark, sidebarlight, sidebardark, bothlight, bothdark, no\n  title<light/dark>: tint the selection accent color & the titlebar\n  sidebar<light/dark>: tint the selection accent color & the sidebar\n  both<light/dark>: tint the titlebar, sidebar, & the selection accent color\n  no: only change the selection accent color\n\nthe titlebar amount defaults to amount*2, but can be overwritten by adding it as a 4th param (default 0.2)\nand the sidebar amount defaults to amount*1.75, but can be overwritten with a 5th param (default 0.175)\n\nexample: color 95AEA3 bothlight 0.2 0.6 0.4\n\n\033[31;4mTHIS PROGRAM WILL DELETE YOUR GTK.CSS\033[0m. \033[31;4mMAKE A BACKUP\033[0m!!!!!!!!!!!!!!!!!!\n"
+	exit
+fi
+
+#I STOLE THIS HEX CONVERSION CODE FROM @nberlette ON GITHUB. THANK YOU FOR NOT SUING ME EVEN THOUGH I DIDNT ASK FOR PERMISSION
+function hex() {
+    printf "%02X%02X%02X" ${*//','/' '}
+}
+[ $(basename -- $0) == "hex" ] && [ $# -gt 0 ] && echo $(hex "${*}")
+
+#convert the hex to rgb so i can work with the values later
+R=$(printf %d 0x${MYHEX:0:2})
+G=$(printf %d 0x${MYHEX:2:2})
+B=$(printf %d 0x${MYHEX:4:2})
+
+#load user defined or default values
+if [[ $3 != "" ]]; then
+	AMOUNT=$3
+else
+	AMOUNT="0.1"
+fi
+HOMEAMOUNT=$(echo 1-$AMOUNT|bc)
+
+#the titlebar can be tinted a different amount
+if [[ $4 != "" ]]; then
+	TITLEAMOUNT=$4
+else
+	TITLEAMOUNT=$(echo "$AMOUNT+$AMOUNT" | bc)
+fi
+TITLEHOMEAMOUNT=$(echo "1-$TITLEAMOUNT" | bc)
+
+#the sidebar can be tinted a different amount
+if [[ $5 != "" ]]; then
+	SIDEAMOUNT=$5
+else
+	SIDEAMOUNT=$(echo "scale=3; ($AMOUNT*1.75)/1" | bc)
+fi
+SIDEHOMEAMOUNT=$(echo "1-$SIDEAMOUNT" | bc)
+
+#the original adwaita ui colors so i can tint them (the R, G, and B are all the same)
+if [[ $2 == "light" || $2 == "titlelight" || $2 == "sidebarlight" || $2 == "bothlight" ]]; then
+	COL="255"
+else
+	COL="30"
+fi
+
+#delete the original gtk.css file so im not just adding and adding and adding to make a 37mb css file lol
+if test -f ~/.config/gtk-4.0/gtk.css; then
+	rm ~/.config/gtk-4.0/gtk.css
+fi
+
+#and write my stuff
+echo "@define-color accent_color #"$1";" >> ~/.config/gtk-4.0/gtk.css
+echo "@define-color accent_bg_color #"$1";" >> ~/.config/gtk-4.0/gtk.css
+
+#TITLEBAR
+if [[ $2 == "light" || $2 == "dark" || $2 == "titlelight" || $2 == "titledark" || $2 == "bothlight" || $2 == "bothdark" ]]; then
+	#do the tinting calculation on the RGB values
+	COLR=$(echo "scale=0; ($COL*$TITLEHOMEAMOUNT + $R*$TITLEAMOUNT)/1" | bc)
+	COLG=$(echo "scale=0; ($COL*$TITLEHOMEAMOUNT + $G*$TITLEAMOUNT)/1" | bc)
+	COLB=$(echo "scale=0; ($COL*$TITLEHOMEAMOUNT + $B*$TITLEAMOUNT)/1" | bc)
+	TITLECOL=$(hex $COLR $COLG $COLB) #then convert to hex!
+	
+	echo "@define-color headerbar_bg_color #"$TITLECOL";" >> ~/.config/gtk-4.0/gtk.css
+fi
+
+#SIDEBAR
+if [[ $2 == "light" || $2 == "dark" || $2 == "sidebarlight" || $2 == "sidebardark" || $2 == "bothlight" || $2 == "bothdark" ]]; then
+	COLR=$(echo "scale=0; ($COL*$SIDEHOMEAMOUNT + $R*$SIDEAMOUNT)/1" | bc)
+	COLG=$(echo "scale=0; ($COL*$SIDEHOMEAMOUNT + $G*$SIDEAMOUNT)/1" | bc)
+	COLB=$(echo "scale=0; ($COL*$SIDEHOMEAMOUNT + $B*$SIDEAMOUNT)/1" | bc)
+	SIDECOL=$(hex $COLR $COLG $COLB)
+	
+	#the order of operations here is important because $COL initially equals an RGB value, but i re-use the variable for the hex... for some reason? im tired
+	COLR=$(echo "scale=0; ($COL*$HOMEAMOUNT + $R*$AMOUNT)/1" | bc)
+	COLG=$(echo "scale=0; ($COL*$HOMEAMOUNT + $G*$AMOUNT)/1" | bc)
+	COLB=$(echo "scale=0; ($COL*$HOMEAMOUNT + $B*$AMOUNT)/1" | bc)
+	COL=$(hex $COLR $COLG $COLB)
+	
+	echo "@define-color sidebar_bg_color #"$SIDECOL";" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color sidebar_backdrop_color #"$COL";" >> ~/.config/gtk-4.0/gtk.css
+	
+	echo "@define-color secondary_sidebar_bg_color #"$SIDECOL";" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color secondary_sidebar_backdrop_color #"$COL";" >> ~/.config/gtk-4.0/gtk.css
+fi
+if [[ $2 == "light" || $2 == "dark" ]]; then
+	echo "@define-color window_bg_color #"$COL";" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color view_bg_color #"$COL";" >> ~/.config/gtk-4.0/gtk.css
+fi
+
+#set the text color so even if you accidentally select the wrong light/dark mode, its still navigable (if ugly)
+#i would make light/dark automatic, but as far as im aware, GTK has no way of dynamically reloading gtk.css https://gitlab.gnome.org/GNOME/gtk/-/issues/3409
+if [[ $2 == "light" || $2 == "sidebarlight" || $2 == "titlelight" || $2 == "bothlight" ]]; then
+	echo "@define-color window_fg_color rgba(0, 0, 0, 0.8);" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color view_fg_color rgba(0, 0, 0, 0.8);" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color headerbar_fg_color rgba(0, 0, 0, 0.8);" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color sidebar_fg_color rgba(0, 0, 0, 0.8);" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color secondary_sidebar_fg_color rgba(0, 0, 0, 0.8);" >> ~/.config/gtk-4.0/gtk.css
+elif [[ $2 == "dark" || $2 == "sidebardark" || $2 == "titledark" || $2 == "bothdark" ]]; then
+	echo "@define-color window_fg_color #FFFFFF;" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color view_fg_color #FFFFFF;" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color headerbar_fg_color #FFFFFF;" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color sidebar_fg_color #FFFFFF;" >> ~/.config/gtk-4.0/gtk.css
+	echo "@define-color secondary_sidebar_fg_color #FFFFFF;" >> ~/.config/gtk-4.0/gtk.css
+fi
+
+#yippee!
+echo "done! reload your apps and it should work :)"
+
+#created by rgbmew :)
