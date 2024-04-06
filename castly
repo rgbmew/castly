@@ -5,7 +5,7 @@ MYHEX=$1
 
 #check for errors
 if ! [[ ${#MYHEX} == 6 && $2 =~ ^("light"|"dark"|"titlelight"|"titledark"|"sidebarlight"|"sidebardark"|"bothlight"|"bothdark"|"no")$ ]]; then
-	printf "usage: color <hex> <mode> <amount>\n\nhex color should NOT contain #\namount is optional (default 0.1)\n\nmodes: light, dark, titlelight, titledark, sidebarlight, sidebardark, bothlight, bothdark, no\n  title<light/dark>: tint the selection accent color & the titlebar\n  sidebar<light/dark>: tint the selection accent color & the sidebar\n  both<light/dark>: tint the titlebar, sidebar, & the selection accent color\n  no: only change the selection accent color\n\nthe titlebar amount defaults to amount*2, but can be overwritten by adding it as a 4th param (default 0.2)\nand the sidebar amount defaults to amount*1.75, but can be overwritten with a 5th param (default 0.175)\n\nexample: color 95AEA3 bothlight 0.2 0.6 0.4\n\n\033[31;4mTHIS PROGRAM WILL DELETE YOUR GTK.CSS\033[0m. \033[31;4mMAKE A BACKUP\033[0m!!!!!!!!!!!!!!!!!!\n"
+	printf "usage: castly <hex> <mode> <amount> <titlebar amount> <sidebar amount>\n\nhex color should NOT contain #\nall 3 amounts are optional (default 0.1, 0.2, 0.175)\n\nmodes: light, dark, titlelight, titledark, sidebarlight, sidebardark, bothlight, bothdark, no\n  title<light/dark>: tint the selection accent color & the titlebar\n  sidebar<light/dark>: tint the selection accent color & the sidebar\n  both<light/dark>: tint the titlebar, sidebar, & the selection accent color\n  no: only change the selection accent color\n\nexample: castly 95AEA3 bothlight 0.2 0.6 0.4\nor: castly 95AEA3 light\n\n\033[31;4mTHIS PROGRAM WILL DELETE YOUR GTK.CSS\033[0m. \033[31;4mMAKE A BACKUP\033[0m!!!!!!!!!!!!!!!!!!\n"
 	exit
 fi
 
