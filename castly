@@ -45,7 +45,8 @@ if ! [[ ${#MYHEX} == 6 && $2 =~ ^("light"|"dark"|"titlelight"|"titledark"|"sideb
 	exit
 fi
 
-if ! command -v bc &> /dev/null then
+if ! command -v bc &> /dev/null
+then
     echo "bc not found, please install bc from your package manager\n\n(for example, sudo apt install bc, for debian-based distros)\n"
     exit 1
 fi
