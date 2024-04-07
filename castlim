@@ -42,7 +42,7 @@ if ! [[ ${#MYHEX} == 6 && $2 =~ ^("all"|"title"|"sidebar"|"both"|"no")$ ]]; then
 	printf "usage: castlim <hex> <mode> <amount> <titlebar amount> <sidebar amount>\n\n"
 	printf "hex color should NOT contain #\n"
 	printf "all 3 amounts are optional (default 0.1, 0.2, 0.175)\n\n"
-	printf "modes: all (default), title, sidebar, both, no\n"
+	printf "modes: all, title, sidebar, both, no\n"
 	printf "  all: tint all colors; the background, the titlebar, sidebar, and selection\n"
 	printf "  title: tint the selection accent color & the titlebar\n"
 	printf "  sidebar: tint the selection accent color & the sidebar\n"
