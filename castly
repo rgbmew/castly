@@ -3,6 +3,13 @@
 #load the hex into something i can work with
 MYHEX=$1
 
+if ! command -v bc &> /dev/null
+then
+    printf "bc not found, please install bc from your package manager\n\n(for example, sudo apt install bc, for debian-based distros)\n"
+    exit 1
+fi
+
+
 if [[ $1 == "info" ]]; then
 	printf "castly is made by me; rgbmew, aka cthrn\n"
 	printf "https://github.com/rgbmew/castly/\n"
@@ -44,13 +51,6 @@ if ! [[ ${#MYHEX} == 6 && $2 =~ ^("light"|"dark"|"titlelight"|"titledark"|"sideb
 	printf "you can also run \"castly info\" for more information about castly!\n"
 	exit
 fi
-
-if ! command -v bc &> /dev/null
-then
-    echo "bc not found, please install bc from your package manager\n\n(for example, sudo apt install bc, for debian-based distros)\n"
-    exit 1
-fi
-
 
 #I STOLE THIS HEX CONVERSION CODE FROM @nberlette ON GITHUB. THANK YOU FOR NOT SUING ME EVEN THOUGH I DIDNT ASK FOR PERMISSION
 function hex() {
