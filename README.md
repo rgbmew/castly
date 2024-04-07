@@ -9,6 +9,13 @@ I made this because I love custom accent colors, and tinting apps with my chosen
 <br><br>
 ***THIS PROGRAM WILL DELETE YOUR GTK.CSS. MAKE A BACKUP***
 <br><br><br>
+# castlim
+castlim is an alternative version of castly, made for using in conjunction with [immersive-dark-mode](https://github.com/realmazharhussain/immersive-dark-mode)
+<br><br>
+it creates a light, and dark theme, at the same time, and should be used with immersive-dark-mode to swap between them
+<br><br>
+more info at the bottom of the usage section
+<br><br><br>
 # usage
 castly \<hex> \<mode> \<baseamount (optional)> \<titlebar amount (optional)> \<sidebar amount (optional)>
 <br><br>
@@ -28,6 +35,18 @@ modes: light, dark, titlelight, titledark, sidebarlight, sidebardark, bothlight,
 - no: only change the selection accent color
 
 if you set the first amount var, but don't set the other 2, then the titlebar amount defaults to amount\*2, and the sidebar amount defaults to amount\*1.75
+<br><br><br><br>
+castlim works slightly differently. the initial usage is the same (hex, mode, amounts), but the syntax is different
+<br><br>
+modes: all, title, sidebar, both, no
+<br>
+- all: tint all colors; the background, the titlebar, sidebar, and selection
+- title: tint the selection accent color & the titlebar
+- sidebar: tint the selection accent color & the sidebar
+- both: tint the titlebar, sidebar, & the selection accent color
+- no: only change the selection accent color
+
+please make sure that immersive-dark-mode is configured to use gtk-light.css and gtk-dark.css! and if you want support for adw-gtk3, then enable the symlinks in the immersive-dark-mode config!
 <br><br><br>
 # limitations
 - GNOME Shell doesn't use the accent color (i would have to compile an entire shell theme, too many dependencies)
@@ -36,9 +55,13 @@ if you set the first amount var, but don't set the other 2, then the titlebar am
 - accent colors may not work on non-gtk apps, for example Telegram or KolourPaint
 <br><br>
 
-Q: It works on GTK4 apps, but not adw-gtk3; what shall i do?!?!??!?!
+Q: castly works on GTK4 apps, but not adw-gtk3; what shall i do?!?!??!?!
 <br>
 A: symlink ~/.config/gtk-4.0/gtk.css to ~/.config/gtk-3.0/gtk.css, and everything will work automatically :)
+<br><br>
+Q: castlim works on GTK4 apps, but not adw-gtk3; what shall i do?!?!??!?!
+<br>
+A: enable gtk symlinking in immersive-dark-mode!
 <br><br>
 Q: It works on natively-installed apps, but not flatpaks?!?!??!?!
 <br>
